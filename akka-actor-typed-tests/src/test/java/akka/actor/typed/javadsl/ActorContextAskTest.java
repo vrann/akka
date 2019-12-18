@@ -14,7 +14,7 @@ import akka.util.Timeout;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.scalatest.junit.JUnitSuite;
+import org.scalatestplus.junit.JUnitSuite;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

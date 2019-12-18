@@ -13,7 +13,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import akka.testkit.AkkaJUnitActorSystemResource;
-import org.scalatest.junit.JUnitSuite;
+import org.scalatestplus.junit.JUnitSuite;
 
 public class ClusterClientTest extends JUnitSuite {
 
@@ -38,6 +38,7 @@ public class ClusterClientTest extends JUnitSuite {
   // #initialContacts
 
   @Test
+  @Deprecated
   public void demonstrateUsage() {
     // #server
     ActorRef serviceA = system.actorOf(Props.create(Service.class), "serviceA");

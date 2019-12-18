@@ -8,7 +8,7 @@ import akka.testkit.AkkaJUnitActorSystemResource;
 import org.junit.*;
 import akka.testkit.AkkaSpec;
 import com.typesafe.config.ConfigFactory;
-import org.scalatest.junit.JUnitSuite;
+import org.scalatestplus.junit.JUnitSuite;
 
 import static org.junit.Assert.*;
 
@@ -73,7 +73,7 @@ public class JavaExtension extends JUnitSuite {
 
   @Test
   public void mustBeAccessible() {
-    assertTrue(system.hasExtension((TestExtensionId.TestExtensionProvider)));
+    assertFalse(system.hasExtension((TestExtensionId.TestExtensionProvider)));
     assertSame(system.extension(TestExtensionId.TestExtensionProvider).system, system);
     assertSame(TestExtensionId.TestExtensionProvider.apply(system).system, system);
   }

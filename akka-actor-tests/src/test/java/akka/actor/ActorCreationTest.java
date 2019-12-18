@@ -17,7 +17,7 @@ import org.junit.Test;
 import akka.japi.Creator;
 import akka.japi.pf.ReceiveBuilder;
 
-import org.scalatest.junit.JUnitSuite;
+import org.scalatestplus.junit.JUnitSuite;
 
 public class ActorCreationTest extends JUnitSuite {
 
@@ -81,6 +81,7 @@ public class ActorCreationTest extends JUnitSuite {
       return Props.create(TestActor.class, () -> new TestActor(magicNumber));
     }
 
+    @Deprecated
     public static Props propsUsingLamdaWithoutClass(Integer magicNumber) {
       return Props.create(() -> new TestActor(magicNumber));
     }
@@ -117,6 +118,7 @@ public class ActorCreationTest extends JUnitSuite {
 
     public static Props propsUsingCreatorWithoutClass(final int magicNumber) {
       return Props.create(
+          TestActor2.class,
           new Creator<TestActor2>() {
             private static final long serialVersionUID = 1L;
 
@@ -139,7 +141,7 @@ public class ActorCreationTest extends JUnitSuite {
 
     public static Props propsUsingStaticCreator(final int magicNumber) {
 
-      return Props.create(staticCreator);
+      return Props.create(TestActor2.class, staticCreator);
     }
 
     final int magicNumber;
@@ -178,6 +180,7 @@ public class ActorCreationTest extends JUnitSuite {
   public void testWrongAnonymousInPlaceCreator() {
     try {
       Props.create(
+          Actor.class,
           new Creator<Actor>() {
             @Override
             public Actor create() throws Exception {
@@ -194,6 +197,7 @@ public class ActorCreationTest extends JUnitSuite {
 
   @Test
   @SuppressWarnings("unchecked")
+  @Deprecated
   public void testWrongErasedStaticCreator() {
     try {
       Props.create(new G());
@@ -206,6 +210,7 @@ public class ActorCreationTest extends JUnitSuite {
     Props.create(AbstractActor.class, new G());
   }
 
+  @Deprecated
   @Test
   public void testRightStaticCreator() {
     final Props p = Props.create(new C());
@@ -213,6 +218,7 @@ public class ActorCreationTest extends JUnitSuite {
   }
 
   @Test
+  @Deprecated
   public void testWrongAnonymousClassStaticCreator() {
     try {
       Props.create(new C() {}); // has implicit reference to outer class
@@ -227,23 +233,26 @@ public class ActorCreationTest extends JUnitSuite {
   @Test
   public void testRightTopLevelNonStaticCreator() {
     final Creator<UntypedAbstractActor> nonStatic = new NonStaticCreator();
-    final Props p = Props.create(nonStatic);
+    final Props p = Props.create(UntypedAbstractActor.class, nonStatic);
     assertEquals(UntypedAbstractActor.class, p.actorClass());
   }
 
   @Test
+  @Deprecated
   public void testRightStaticParametricCreator() {
     final Props p = Props.create(new D<AbstractActor>());
     assertEquals(Actor.class, p.actorClass());
   }
 
   @Test
+  @Deprecated
   public void testRightStaticBoundedCreator() {
     final Props p = Props.create(new E<AbstractActor>());
     assertEquals(AbstractActor.class, p.actorClass());
   }
 
   @Test
+  @Deprecated
   public void testRightStaticSuperinterface() {
     final Props p = Props.create(new F());
     assertEquals(AbstractActor.class, p.actorClass());
@@ -271,6 +280,7 @@ public class ActorCreationTest extends JUnitSuite {
   }
 
   @Test
+  @Deprecated
   public void testAnonymousClassCreatedInStaticMethodCreator() {
     final Creator<AbstractActor> anonymousCreatorFromStaticMethod =
         createAnonymousCreatorInStaticMethod();
@@ -278,12 +288,14 @@ public class ActorCreationTest extends JUnitSuite {
   }
 
   @Test
+  @Deprecated
   public void testClassCreatorWithArguments() {
     final Creator<AbstractActor> anonymousCreatorFromStaticMethod = new P("hello");
     Props.create(anonymousCreatorFromStaticMethod);
   }
 
   @Test
+  @Deprecated
   public void testAnonymousClassCreatorWithArguments() {
     try {
       final Creator<AbstractActor> anonymousCreatorFromStaticMethod = new P("hello") {
@@ -305,6 +317,7 @@ public class ActorCreationTest extends JUnitSuite {
   }
 
   @Test
+  @Deprecated
   public void testWrongPropsUsingLambdaWithoutClass() {
     final Props p = TestActor.propsUsingLamda(17);
     assertEquals(TestActor.class, p.actorClass());
@@ -334,12 +347,12 @@ public class ActorCreationTest extends JUnitSuite {
   public void testIssue20537Reproducer() {
     final Issue20537Reproducer.ReproducerCreator creator =
         new Issue20537Reproducer.ReproducerCreator(false);
-    final Props p = Props.create(creator);
+    final Props p = Props.create(Issue20537Reproducer.class, creator);
     assertEquals(Issue20537Reproducer.class, p.actorClass());
 
     ArrayList<Props> pList =
         IntStream.range(0, 4)
-            .mapToObj(i -> Props.create(creator))
+            .mapToObj(i -> Props.create(Issue20537Reproducer.class, creator))
             .collect(toCollection(ArrayList::new));
     for (Props each : pList) {
       assertEquals(Issue20537Reproducer.class, each.actorClass());

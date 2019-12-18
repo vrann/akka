@@ -18,7 +18,7 @@ import com.typesafe.config.ConfigFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.scalatest.junit.JUnitSuite;
+import org.scalatestplus.junit.JUnitSuite;
 
 import java.util.*;
 import java.time.Duration;
@@ -120,11 +120,11 @@ public class LoggingAdapterTest extends JUnitSuite {
    */
   @Test
   public void mustBeAbleToCreateLogEventsWithOldConstructor() throws Exception {
-    assertNotNull(new Error(new Exception(), "logSource", this.getClass(), "The message"));
-    assertNotNull(new Error("logSource", this.getClass(), "The message"));
-    assertNotNull(new Warning("logSource", this.getClass(), "The message"));
-    assertNotNull(new Info("logSource", this.getClass(), "The message"));
-    assertNotNull(new Debug("logSource", this.getClass(), "The message"));
+    assertNotNull(new Error(new Exception(), "logSource", LoggingAdapterTest.class, "The message"));
+    assertNotNull(new Error("logSource", LoggingAdapterTest.class, "The message"));
+    assertNotNull(new Warning("logSource", LoggingAdapterTest.class, "The message"));
+    assertNotNull(new Info("logSource", LoggingAdapterTest.class, "The message"));
+    assertNotNull(new Debug("logSource", LoggingAdapterTest.class, "The message"));
   }
 
   private static class LogJavaTestKit extends TestKit {

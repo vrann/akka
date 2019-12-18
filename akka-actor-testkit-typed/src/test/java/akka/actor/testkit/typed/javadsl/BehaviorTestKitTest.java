@@ -13,7 +13,7 @@ import akka.actor.typed.Props;
 import akka.actor.typed.javadsl.Behaviors;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.scalatest.junit.JUnitSuite;
+import org.scalatestplus.junit.JUnitSuite;
 import org.slf4j.event.Level;
 
 import java.util.Arrays;

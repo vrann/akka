@@ -9,7 +9,7 @@ import akka.japi.pf.Match;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.Test;
-import org.scalatest.junit.JUnitSuite;
+import org.scalatestplus.junit.JUnitSuite;
 import scala.MatchError;
 
 import static org.junit.Assert.*;
@@ -41,13 +41,14 @@ public class MatchBuilderTest extends JUnitSuite {
 
     assertTrue(
         "An integer should be multiplied by 10",
-        new Double(47110).equals(pf.match(new Integer(4711))));
+        Double.valueOf(47110).equals(pf.match(Integer.valueOf(4711))));
     assertTrue(
         "A double should be multiplied by -10",
-        new Double(-47110).equals(pf.match(new Double(4711))));
+        Double.valueOf(-47110).equals(pf.match(Double.valueOf(4711))));
 
     exception.expect(MatchError.class);
-    assertFalse("A string should throw a MatchError", new Double(4711).equals(pf.match("4711")));
+    assertFalse(
+        "A string should throw a MatchError", Double.valueOf(4711).equals(pf.match("4711")));
   }
 
   static class GenericClass<T> {

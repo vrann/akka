@@ -18,6 +18,18 @@ object AkkaDisciplinePlugin extends AutoPlugin with ScalafixSupport {
 
   // We allow warnings in docs to get the 'snippets' right
   val nonFatalWarningsFor = Set("akka-docs")
+  val nonFatalJavaWarningsFor = Set(
+    // for sun.misc.Unsafe and AbstractScheduler
+    "akka-actor",
+    // use of deprecated akka.protobuf.GeneratedMessage
+    "akka-protobuf",
+    // references to deprecated PARSER fields in generated message formats?
+    "akka-remote",
+    // references to deprecated PARSER fields in generated message formats?
+    "akka-distributed-data",
+    // references to deprecated PARSER fields in generated message formats?
+    "akka-cluster-sharding-typed",
+  )
 
   val strictProjects = Set("akka-discovery", "akka-protobuf", "akka-coordination")
 
@@ -38,6 +50,10 @@ object AkkaDisciplinePlugin extends AutoPlugin with ScalafixSupport {
           if (!nonFatalWarningsFor(name.value)) Seq("-Xfatal-warnings")
           else Seq.empty
         ),
+      Compile / javacOptions ++= (
+        if (!nonFatalJavaWarningsFor(name.value)) Seq("-Werror", "-Xlint:deprecation", "-Xlint:unchecked")
+        else Seq.empty
+      ),
       Test / scalacOptions --= testUndicipline,
       Compile / console / scalacOptions --= Seq("-deprecation", "-Xfatal-warnings", "-Xlint", "-Ywarn-unused:imports"),
       Compile / scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
