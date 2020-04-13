@@ -8,16 +8,26 @@ import scala.concurrent.duration._
 
 import akka.actor.testkit.typed.scaladsl.LogCapturing
 import akka.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
-class ReliableDeliverySpec
-    extends ScalaTestWithActorTestKit("""
-  akka.reliable-delivery.consumer-controller.flow-control-window = 20
-  """)
+object ReliableDeliverySpec {
+  val config: Config = ConfigFactory.parseString("""
+    akka.reliable-delivery.consumer-controller.flow-control-window = 20
+    """)
+}
+
+class ReliableDeliverySpec(config: Config)
+    extends ScalaTestWithActorTestKit(config)
     with AnyWordSpecLike
     with LogCapturing {
   import TestConsumer.defaultConsumerDelay
   import TestProducer.defaultProducerDelay
+
+  def this() = this(ReliableDeliverySpec.config)
+
+  private val chunked = ProducerController.Settings(system).chunkLargeMessagesBytes > 0
 
   private var idCount = 0
   private def nextId(): Int = {
@@ -29,7 +39,7 @@ class ReliableDeliverySpec
 
     "illustrate point-to-point usage" in {
       nextId()
-      val consumerEndProbe = createTestProbe[TestConsumer.CollectedProducerIds]()
+      val consumerEndProbe = createTestProbe[TestConsumer.Collected]()
       val consumerController =
         spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
       spawn(
@@ -51,7 +61,7 @@ class ReliableDeliverySpec
 
     "illustrate point-to-point usage with ask" in {
       nextId()
-      val consumerEndProbe = createTestProbe[TestConsumer.CollectedProducerIds]()
+      val consumerEndProbe = createTestProbe[TestConsumer.Collected]()
       val consumerController =
         spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
       spawn(
@@ -69,9 +79,11 @@ class ReliableDeliverySpec
 
       consumerController ! ConsumerController.RegisterToProducerController(producerController)
 
-      consumerEndProbe.receiveMessage(5.seconds)
-
-      replyProbe.receiveMessages(42, 5.seconds).toSet should ===((1L to 42L).toSet)
+      val messageCount = consumerEndProbe.receiveMessage(5.seconds).messageCount
+      if (chunked)
+        replyProbe.receiveMessages(messageCount, 5.seconds)
+      else
+        replyProbe.receiveMessages(messageCount, 5.seconds).toSet should ===((1L to 42).toSet)
 
       testKit.stop(producer)
       testKit.stop(producerController)
@@ -80,7 +92,7 @@ class ReliableDeliverySpec
 
     def testWithDelays(producerDelay: FiniteDuration, consumerDelay: FiniteDuration): Unit = {
       nextId()
-      val consumerEndProbe = createTestProbe[TestConsumer.CollectedProducerIds]()
+      val consumerEndProbe = createTestProbe[TestConsumer.Collected]()
       val consumerController =
         spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
       spawn(TestConsumer(consumerDelay, 42, consumerEndProbe.ref, consumerController), name = s"destination-${idCount}")
@@ -112,7 +124,7 @@ class ReliableDeliverySpec
 
     "allow replacement of destination" in {
       nextId()
-      val consumerEndProbe = createTestProbe[TestConsumer.CollectedProducerIds]()
+      val consumerEndProbe = createTestProbe[TestConsumer.Collected]()
       val consumerController =
         spawn(ConsumerController[TestConsumer.Job](), s"consumerController1-${idCount}")
       spawn(TestConsumer(defaultConsumerDelay, 42, consumerEndProbe.ref, consumerController), s"consumer1-${idCount}")
@@ -125,7 +137,7 @@ class ReliableDeliverySpec
 
       consumerEndProbe.receiveMessage(5.seconds)
 
-      val consumerEndProbe2 = createTestProbe[TestConsumer.CollectedProducerIds]()
+      val consumerEndProbe2 = createTestProbe[TestConsumer.Collected]()
       val consumerController2 =
         spawn(ConsumerController[TestConsumer.Job](), s"consumerController2-${idCount}")
       spawn(TestConsumer(defaultConsumerDelay, 42, consumerEndProbe2.ref, consumerController2), s"consumer2-${idCount}")
@@ -188,3 +200,10 @@ class ReliableDeliverySpec
   }
 
 }
+
+// Same tests but with chunked messages
+class ReliableDeliveryChunkedSpec
+    extends ReliableDeliverySpec(
+      ConfigFactory.parseString("""
+    akka.reliable-delivery.producer-controller.chunk-large-messages = 1b
+    """).withFallback(TestSerializer.config).withFallback(ReliableDeliverySpec.config))

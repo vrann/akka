@@ -20,8 +20,10 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.LoggerOps
 import akka.actor.typed.scaladsl.StashBuffer
 import akka.actor.typed.scaladsl.TimerScheduler
-import akka.util.ConstantFun.scalaIdentityFunction
 import akka.annotation.InternalApi
+import akka.serialization.SerializationExtension
+import akka.util.ByteString
+import akka.util.ConstantFun.scalaIdentityFunction
 
 /**
  * INTERNAL API
@@ -86,6 +88,7 @@ import akka.annotation.InternalApi
       receivedSeqNr: SeqNr,
       confirmedSeqNr: SeqNr,
       requestedSeqNr: SeqNr,
+      collectedChunks: List[SequencedMessage[A]],
       registering: Option[ActorRef[ProducerController.Command[A]]],
       stopping: Boolean) {
 
@@ -100,6 +103,11 @@ import akka.annotation.InternalApi
         case None          => None
         case s @ Some(reg) => if (seqMsg.producerController == reg) None else s
       }
+    }
+
+    def clearCollectedChunks(): State[A] = {
+      if (collectedChunks == Nil) this
+      else copy(collectedChunks = Nil)
     }
   }
 
@@ -203,6 +211,7 @@ import akka.annotation.InternalApi
       receivedSeqNr = 0,
       confirmedSeqNr = 0,
       requestedSeqNr = 0,
+      collectedChunks = Nil,
       registering,
       stopping)
   }
@@ -266,6 +275,8 @@ private class ConsumerControllerImpl[A](
   private val flightRecorder = ActorFlightRecorder(context.system).delivery
 
   private val traceEnabled = context.log.isTraceEnabled
+
+  private lazy val serialization = SerializationExtension(context.system)
 
   retryTimer.start()
 
@@ -473,8 +484,56 @@ private class ConsumerControllerImpl[A](
   }
 
   private def deliver(s: State[A], seqMsg: SequencedMessage[A]): Behavior[InternalCommand] = {
-    s.consumer ! Delivery(seqMsg.message, context.self, seqMsg.producerId, seqMsg.seqNr)
-    waitingForConfirmation(s, seqMsg)
+    def previouslyCollectedChunks = if (seqMsg.isFirstChunk) Nil else s.collectedChunks
+    if (seqMsg.isLastChunk) {
+      val assembledSeqMsg =
+        if (seqMsg.message.isInstanceOf[ChunkedMessage]) assembleChunks(seqMsg :: previouslyCollectedChunks)
+        else seqMsg
+      s.consumer ! Delivery(assembledSeqMsg.message, context.self, seqMsg.producerId, seqMsg.seqNr)
+      waitingForConfirmation(s.clearCollectedChunks(), assembledSeqMsg)
+    } else {
+
+      val newRequestedSeqNr =
+        if ((s.requestedSeqNr - seqMsg.seqNr) == flowControlWindow / 2) {
+          val newRequestedSeqNr = s.requestedSeqNr + flowControlWindow / 2
+          flightRecorder.consumerSentRequest(seqMsg.producerId, newRequestedSeqNr)
+          context.log.debugN(
+            "Sending Request when collecting chunks seqNr [{}], confirmedSeqNr [{}], requestUpToSeqNr [{}].",
+            seqMsg.seqNr,
+            s.confirmedSeqNr,
+            newRequestedSeqNr)
+          s.producerController ! Request(
+            confirmedSeqNr = s.confirmedSeqNr,
+            newRequestedSeqNr,
+            resendLost,
+            viaTimeout = false)
+          retryTimer.start() // reset interval since Request was just sent
+          newRequestedSeqNr
+        } else {
+          s.requestedSeqNr
+        }
+
+      stashBuffer.unstash(
+        active(s.copy(collectedChunks = seqMsg :: previouslyCollectedChunks, requestedSeqNr = newRequestedSeqNr)),
+        1,
+        scalaIdentityFunction)
+    }
+  }
+
+  private def assembleChunks(collectedChunks: List[SequencedMessage[A]]): SequencedMessage[A] = {
+    val reverseCollectedChunks = collectedChunks.reverse
+    val bytes = reverseCollectedChunks
+      .foldLeft(ByteString.empty) { (acc, seqMsg) =>
+        acc ++ seqMsg.message.asInstanceOf[ChunkedMessage].serialized
+      }
+      .toArray
+    val head = collectedChunks.head // this is the last chunk
+    val headMessage = head.message.asInstanceOf[ChunkedMessage]
+    // serialization exceptions are thrown, because it will anyway be stuck with same error if retried and
+    // we can't just ignore the message
+    val message = serialization.deserialize(bytes, headMessage.serializerId, headMessage.manifest).get.asInstanceOf[A]
+    SequencedMessage(head.producerId, head.seqNr, message, reverseCollectedChunks.head.first, head.ack)(
+      head.producerController)
   }
 
   // The message has been delivered to the consumer and it is now waiting for Confirmed from

@@ -27,10 +27,12 @@ object ReliableDeliveryWithEventSourcedProducerQueueSpec {
     """)
 }
 
-class ReliableDeliveryWithEventSourcedProducerQueueSpec
-    extends ScalaTestWithActorTestKit(WorkPullingWithEventSourcedProducerQueueSpec.conf)
+class ReliableDeliveryWithEventSourcedProducerQueueSpec(config: Config)
+    extends ScalaTestWithActorTestKit(config)
     with AnyWordSpecLike
     with LogCapturing {
+
+  def this() = this(ReliableDeliveryWithEventSourcedProducerQueueSpec.conf)
 
   "ReliableDelivery with EventSourcedProducerQueue" must {
 
@@ -167,3 +169,10 @@ class ReliableDeliveryWithEventSourcedProducerQueueSpec
   }
 
 }
+
+// same tests but with chunked messages
+class ReliableDeliveryWithEventSourcedProducerQueueChunkedSpec
+    extends ReliableDeliveryWithEventSourcedProducerQueueSpec(
+      ConfigFactory.parseString("""
+    akka.reliable-delivery.producer-controller.chunk-large-messages = 1b
+    """).withFallback(ReliableDeliveryWithEventSourcedProducerQueueSpec.conf))
