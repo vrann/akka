@@ -1374,7 +1374,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       // Derive the deltaPropagationInterval from the gossipInterval.
       // Normally the delta is propagated to all nodes within the gossip tick, so that
       // full state gossip is not needed.
-      val deltaPropagationInterval = (gossipInterval / deltaPropagationSelector.gossipIntervalDivisor).max(200.millis)
+      val deltaPropagationInterval = (gossipInterval / deltaPropagationSelector.gossipIntervalDivisor).min(5.millis)
       Some(
         context.system.scheduler
           .scheduleWithFixedDelay(deltaPropagationInterval, deltaPropagationInterval, self, DeltaPropagationTick))
@@ -1953,13 +1953,22 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   def receiveDeltaPropagationTick(): Unit = {
     deltaPropagationSelector.collectPropagations().foreach {
       case (node, deltaPropagation) =>
-        // TODO split it to several DeltaPropagation if too many entries
-        if (deltaPropagation.deltas.nonEmpty)
+        if (deltaPropagation.deltas.nonEmpty) {
+          deltaPropagation.deltas.foreach {
+            case (key, entries) => log.debug(
+              "Sending DeltaPropagation from [{}] for [{}] with sequence numbers [{}], current version is [{}]",
+              deltaPropagation.fromNode,
+              key,
+              entries.fromSeqNr + "-" + entries.toSeqNr,
+              deltaPropagationSelector.currentVersion(key)
+            )
+          }
           replica(node) ! deltaPropagation
+        }
     }
 
-    if (deltaPropagationSelector.propagationCount % deltaPropagationSelector.gossipIntervalDivisor == 0)
-      deltaPropagationSelector.cleanupDeltaEntries()
+//    if (deltaPropagationSelector.propagationCount % deltaPropagationSelector.gossipIntervalDivisor == 0)
+//      deltaPropagationSelector.cleanupDeltaEntries()
   }
 
   def receiveDeltaPropagation(fromNode: UniqueAddress, reply: Boolean, deltas: Map[KeyId, Delta]): Unit =
