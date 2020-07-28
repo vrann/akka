@@ -16032,6 +16032,938 @@ public final class ReplicatorMessages {
 
   }
 
+  public interface DeltaMissingOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:akka.cluster.ddata.DeltaMissing)
+      akka.protobufv3.internal.MessageOrBuilder {
+
+    /**
+     * <code>required string key = 1;</code>
+     * @return Whether the key field is set.
+     */
+    boolean hasKey();
+    /**
+     * <code>required string key = 1;</code>
+     * @return The key.
+     */
+    java.lang.String getKey();
+    /**
+     * <code>required string key = 1;</code>
+     * @return The bytes for key.
+     */
+    akka.protobufv3.internal.ByteString
+        getKeyBytes();
+
+    /**
+     * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+     * @return Whether the fromNode field is set.
+     */
+    boolean hasFromNode();
+    /**
+     * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+     * @return The fromNode.
+     */
+    akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress getFromNode();
+    /**
+     * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+     */
+    akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddressOrBuilder getFromNodeOrBuilder();
+
+    /**
+     * <code>required int64 nodeLastDeltaVersion = 3;</code>
+     * @return Whether the nodeLastDeltaVersion field is set.
+     */
+    boolean hasNodeLastDeltaVersion();
+    /**
+     * <code>required int64 nodeLastDeltaVersion = 3;</code>
+     * @return The nodeLastDeltaVersion.
+     */
+    long getNodeLastDeltaVersion();
+  }
+  /**
+   * Protobuf type {@code akka.cluster.ddata.DeltaMissing}
+   */
+  public  static final class DeltaMissing extends
+      akka.protobufv3.internal.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:akka.cluster.ddata.DeltaMissing)
+      DeltaMissingOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use DeltaMissing.newBuilder() to construct.
+    private DeltaMissing(akka.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DeltaMissing() {
+      key_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        akka.protobufv3.internal.GeneratedMessageV3.UnusedPrivateParameter unused) {
+      return new DeltaMissing();
+    }
+
+    @java.lang.Override
+    public final akka.protobufv3.internal.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DeltaMissing(
+        akka.protobufv3.internal.CodedInputStream input,
+        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      akka.protobufv3.internal.UnknownFieldSet.Builder unknownFields =
+          akka.protobufv3.internal.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              akka.protobufv3.internal.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              key_ = bs;
+              break;
+            }
+            case 18: {
+              akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) != 0)) {
+                subBuilder = fromNode_.toBuilder();
+              }
+              fromNode_ = input.readMessage(akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(fromNode_);
+                fromNode_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              nodeLastDeltaVersion_ = input.readInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (akka.protobufv3.internal.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new akka.protobufv3.internal.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final akka.protobufv3.internal.Descriptors.Descriptor
+        getDescriptor() {
+      return akka.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaMissing_descriptor;
+    }
+
+    @java.lang.Override
+    protected akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return akka.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaMissing_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing.class, akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int KEY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object key_;
+    /**
+     * <code>required string key = 1;</code>
+     * @return Whether the key field is set.
+     */
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>required string key = 1;</code>
+     * @return The key.
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        akka.protobufv3.internal.ByteString bs = 
+            (akka.protobufv3.internal.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string key = 1;</code>
+     * @return The bytes for key.
+     */
+    public akka.protobufv3.internal.ByteString
+        getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        akka.protobufv3.internal.ByteString b = 
+            akka.protobufv3.internal.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (akka.protobufv3.internal.ByteString) ref;
+      }
+    }
+
+    public static final int FROMNODE_FIELD_NUMBER = 2;
+    private akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress fromNode_;
+    /**
+     * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+     * @return Whether the fromNode field is set.
+     */
+    public boolean hasFromNode() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+     * @return The fromNode.
+     */
+    public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress getFromNode() {
+      return fromNode_ == null ? akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.getDefaultInstance() : fromNode_;
+    }
+    /**
+     * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+     */
+    public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddressOrBuilder getFromNodeOrBuilder() {
+      return fromNode_ == null ? akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.getDefaultInstance() : fromNode_;
+    }
+
+    public static final int NODELASTDELTAVERSION_FIELD_NUMBER = 3;
+    private long nodeLastDeltaVersion_;
+    /**
+     * <code>required int64 nodeLastDeltaVersion = 3;</code>
+     * @return Whether the nodeLastDeltaVersion field is set.
+     */
+    public boolean hasNodeLastDeltaVersion() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>required int64 nodeLastDeltaVersion = 3;</code>
+     * @return The nodeLastDeltaVersion.
+     */
+    public long getNodeLastDeltaVersion() {
+      return nodeLastDeltaVersion_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasFromNode()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasNodeLastDeltaVersion()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getFromNode().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(akka.protobufv3.internal.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        akka.protobufv3.internal.GeneratedMessageV3.writeString(output, 1, key_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(2, getFromNode());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeInt64(3, nodeLastDeltaVersion_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += akka.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, key_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += akka.protobufv3.internal.CodedOutputStream
+          .computeMessageSize(2, getFromNode());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += akka.protobufv3.internal.CodedOutputStream
+          .computeInt64Size(3, nodeLastDeltaVersion_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing)) {
+        return super.equals(obj);
+      }
+      akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing other = (akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing) obj;
+
+      if (hasKey() != other.hasKey()) return false;
+      if (hasKey()) {
+        if (!getKey()
+            .equals(other.getKey())) return false;
+      }
+      if (hasFromNode() != other.hasFromNode()) return false;
+      if (hasFromNode()) {
+        if (!getFromNode()
+            .equals(other.getFromNode())) return false;
+      }
+      if (hasNodeLastDeltaVersion() != other.hasNodeLastDeltaVersion()) return false;
+      if (hasNodeLastDeltaVersion()) {
+        if (getNodeLastDeltaVersion()
+            != other.getNodeLastDeltaVersion()) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasKey()) {
+        hash = (37 * hash) + KEY_FIELD_NUMBER;
+        hash = (53 * hash) + getKey().hashCode();
+      }
+      if (hasFromNode()) {
+        hash = (37 * hash) + FROMNODE_FIELD_NUMBER;
+        hash = (53 * hash) + getFromNode().hashCode();
+      }
+      if (hasNodeLastDeltaVersion()) {
+        hash = (37 * hash) + NODELASTDELTAVERSION_FIELD_NUMBER;
+        hash = (53 * hash) + akka.protobufv3.internal.Internal.hashLong(
+            getNodeLastDeltaVersion());
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(
+        java.nio.ByteBuffer data)
+        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(
+        java.nio.ByteBuffer data,
+        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(
+        akka.protobufv3.internal.ByteString data)
+        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(
+        akka.protobufv3.internal.ByteString data,
+        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(byte[] data)
+        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(
+        byte[] data,
+        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return akka.protobufv3.internal.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(
+        java.io.InputStream input,
+        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return akka.protobufv3.internal.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return akka.protobufv3.internal.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseDelimitedFrom(
+        java.io.InputStream input,
+        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return akka.protobufv3.internal.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(
+        akka.protobufv3.internal.CodedInputStream input)
+        throws java.io.IOException {
+      return akka.protobufv3.internal.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parseFrom(
+        akka.protobufv3.internal.CodedInputStream input,
+        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return akka.protobufv3.internal.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        akka.protobufv3.internal.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code akka.cluster.ddata.DeltaMissing}
+     */
+    public static final class Builder extends
+        akka.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:akka.cluster.ddata.DeltaMissing)
+        akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissingOrBuilder {
+      public static final akka.protobufv3.internal.Descriptors.Descriptor
+          getDescriptor() {
+        return akka.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaMissing_descriptor;
+      }
+
+      @java.lang.Override
+      protected akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return akka.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaMissing_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing.class, akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing.Builder.class);
+      }
+
+      // Construct using akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          akka.protobufv3.internal.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (akka.protobufv3.internal.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getFromNodeFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (fromNodeBuilder_ == null) {
+          fromNode_ = null;
+        } else {
+          fromNodeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        nodeLastDeltaVersion_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+
+      @java.lang.Override
+      public akka.protobufv3.internal.Descriptors.Descriptor
+          getDescriptorForType() {
+        return akka.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaMissing_descriptor;
+      }
+
+      @java.lang.Override
+      public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing getDefaultInstanceForType() {
+        return akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing build() {
+        akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing buildPartial() {
+        akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing result = new akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.key_ = key_;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          if (fromNodeBuilder_ == null) {
+            result.fromNode_ = fromNode_;
+          } else {
+            result.fromNode_ = fromNodeBuilder_.build();
+          }
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.nodeLastDeltaVersion_ = nodeLastDeltaVersion_;
+          to_bitField0_ |= 0x00000004;
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          akka.protobufv3.internal.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          akka.protobufv3.internal.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          akka.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          akka.protobufv3.internal.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          akka.protobufv3.internal.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(akka.protobufv3.internal.Message other) {
+        if (other instanceof akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing) {
+          return mergeFrom((akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing other) {
+        if (other == akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing.getDefaultInstance()) return this;
+        if (other.hasKey()) {
+          bitField0_ |= 0x00000001;
+          key_ = other.key_;
+          onChanged();
+        }
+        if (other.hasFromNode()) {
+          mergeFromNode(other.getFromNode());
+        }
+        if (other.hasNodeLastDeltaVersion()) {
+          setNodeLastDeltaVersion(other.getNodeLastDeltaVersion());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          return false;
+        }
+        if (!hasFromNode()) {
+          return false;
+        }
+        if (!hasNodeLastDeltaVersion()) {
+          return false;
+        }
+        if (!getFromNode().isInitialized()) {
+          return false;
+        }
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          akka.protobufv3.internal.CodedInputStream input,
+          akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (akka.protobufv3.internal.InvalidProtocolBufferException e) {
+          parsedMessage = (akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object key_ = "";
+      /**
+       * <code>required string key = 1;</code>
+       * @return Whether the key field is set.
+       */
+      public boolean hasKey() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>required string key = 1;</code>
+       * @return The key.
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          akka.protobufv3.internal.ByteString bs =
+              (akka.protobufv3.internal.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            key_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string key = 1;</code>
+       * @return The bytes for key.
+       */
+      public akka.protobufv3.internal.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          akka.protobufv3.internal.ByteString b = 
+              akka.protobufv3.internal.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (akka.protobufv3.internal.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string key = 1;</code>
+       * @param value The key to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string key = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKey() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string key = 1;</code>
+       * @param value The bytes for key to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKeyBytes(
+          akka.protobufv3.internal.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      private akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress fromNode_;
+      private akka.protobufv3.internal.SingleFieldBuilderV3<
+          akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress, akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.Builder, akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddressOrBuilder> fromNodeBuilder_;
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       * @return Whether the fromNode field is set.
+       */
+      public boolean hasFromNode() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       * @return The fromNode.
+       */
+      public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress getFromNode() {
+        if (fromNodeBuilder_ == null) {
+          return fromNode_ == null ? akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.getDefaultInstance() : fromNode_;
+        } else {
+          return fromNodeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       */
+      public Builder setFromNode(akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress value) {
+        if (fromNodeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          fromNode_ = value;
+          onChanged();
+        } else {
+          fromNodeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       */
+      public Builder setFromNode(
+          akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.Builder builderForValue) {
+        if (fromNodeBuilder_ == null) {
+          fromNode_ = builderForValue.build();
+          onChanged();
+        } else {
+          fromNodeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       */
+      public Builder mergeFromNode(akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress value) {
+        if (fromNodeBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+              fromNode_ != null &&
+              fromNode_ != akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.getDefaultInstance()) {
+            fromNode_ =
+              akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.newBuilder(fromNode_).mergeFrom(value).buildPartial();
+          } else {
+            fromNode_ = value;
+          }
+          onChanged();
+        } else {
+          fromNodeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       */
+      public Builder clearFromNode() {
+        if (fromNodeBuilder_ == null) {
+          fromNode_ = null;
+          onChanged();
+        } else {
+          fromNodeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       */
+      public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.Builder getFromNodeBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getFromNodeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       */
+      public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddressOrBuilder getFromNodeOrBuilder() {
+        if (fromNodeBuilder_ != null) {
+          return fromNodeBuilder_.getMessageOrBuilder();
+        } else {
+          return fromNode_ == null ?
+              akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.getDefaultInstance() : fromNode_;
+        }
+      }
+      /**
+       * <code>required .akka.cluster.ddata.UniqueAddress fromNode = 2;</code>
+       */
+      private akka.protobufv3.internal.SingleFieldBuilderV3<
+          akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress, akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.Builder, akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddressOrBuilder> 
+          getFromNodeFieldBuilder() {
+        if (fromNodeBuilder_ == null) {
+          fromNodeBuilder_ = new akka.protobufv3.internal.SingleFieldBuilderV3<
+              akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress, akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.Builder, akka.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddressOrBuilder>(
+                  getFromNode(),
+                  getParentForChildren(),
+                  isClean());
+          fromNode_ = null;
+        }
+        return fromNodeBuilder_;
+      }
+
+      private long nodeLastDeltaVersion_ ;
+      /**
+       * <code>required int64 nodeLastDeltaVersion = 3;</code>
+       * @return Whether the nodeLastDeltaVersion field is set.
+       */
+      public boolean hasNodeLastDeltaVersion() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>required int64 nodeLastDeltaVersion = 3;</code>
+       * @return The nodeLastDeltaVersion.
+       */
+      public long getNodeLastDeltaVersion() {
+        return nodeLastDeltaVersion_;
+      }
+      /**
+       * <code>required int64 nodeLastDeltaVersion = 3;</code>
+       * @param value The nodeLastDeltaVersion to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNodeLastDeltaVersion(long value) {
+        bitField0_ |= 0x00000004;
+        nodeLastDeltaVersion_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int64 nodeLastDeltaVersion = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNodeLastDeltaVersion() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        nodeLastDeltaVersion_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final akka.protobufv3.internal.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final akka.protobufv3.internal.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:akka.cluster.ddata.DeltaMissing)
+    }
+
+    // @@protoc_insertion_point(class_scope:akka.cluster.ddata.DeltaMissing)
+    private static final akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing();
+    }
+
+    public static akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final akka.protobufv3.internal.Parser<DeltaMissing>
+        PARSER = new akka.protobufv3.internal.AbstractParser<DeltaMissing>() {
+      @java.lang.Override
+      public DeltaMissing parsePartialFrom(
+          akka.protobufv3.internal.CodedInputStream input,
+          akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws akka.protobufv3.internal.InvalidProtocolBufferException {
+        return new DeltaMissing(input, extensionRegistry);
+      }
+    };
+
+    public static akka.protobufv3.internal.Parser<DeltaMissing> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public akka.protobufv3.internal.Parser<DeltaMissing> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public akka.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaMissing getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface DeltaPropagationOrBuilder extends
       // @@protoc_insertion_point(interface_extends:akka.cluster.ddata.DeltaPropagation)
       akka.protobufv3.internal.MessageOrBuilder {
@@ -23845,6 +24777,11 @@ public final class ReplicatorMessages {
     akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_akka_cluster_ddata_Gossip_Entry_fieldAccessorTable;
   private static final akka.protobufv3.internal.Descriptors.Descriptor
+    internal_static_akka_cluster_ddata_DeltaMissing_descriptor;
+  private static final 
+    akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_akka_cluster_ddata_DeltaMissing_fieldAccessorTable;
+  private static final akka.protobufv3.internal.Descriptors.Descriptor
     internal_static_akka_cluster_ddata_DeltaPropagation_descriptor;
   private static final 
     akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
@@ -23946,28 +24883,31 @@ public final class ReplicatorMessages {
       "ster.ddata.Gossip.Entry\022\023\n\013toSystemUid\030\003" +
       " \001(\020\022\025\n\rfromSystemUid\030\004 \001(\020\032H\n\005Entry\022\013\n\003" +
       "key\030\001 \002(\t\0222\n\010envelope\030\002 \002(\0132 .akka.clust" +
-      "er.ddata.DataEnvelope\"\201\002\n\020DeltaPropagati" +
-      "on\0223\n\010fromNode\030\001 \002(\0132!.akka.cluster.ddat" +
-      "a.UniqueAddress\022;\n\007entries\030\002 \003(\0132*.akka." +
-      "cluster.ddata.DeltaPropagation.Entry\022\r\n\005" +
-      "reply\030\003 \001(\010\032l\n\005Entry\022\013\n\003key\030\001 \002(\t\0222\n\010env" +
-      "elope\030\002 \002(\0132 .akka.cluster.ddata.DataEnv" +
-      "elope\022\021\n\tfromSeqNr\030\003 \002(\003\022\017\n\007toSeqNr\030\004 \001(" +
-      "\003\"X\n\rUniqueAddress\022,\n\007address\030\001 \002(\0132\033.ak" +
-      "ka.cluster.ddata.Address\022\013\n\003uid\030\002 \002(\017\022\014\n" +
-      "\004uid2\030\003 \001(\017\")\n\007Address\022\020\n\010hostname\030\001 \002(\t" +
-      "\022\014\n\004port\030\002 \002(\r\"\224\001\n\rVersionVector\0228\n\007entr" +
-      "ies\030\001 \003(\0132\'.akka.cluster.ddata.VersionVe" +
-      "ctor.Entry\032I\n\005Entry\022/\n\004node\030\001 \002(\0132!.akka" +
-      ".cluster.ddata.UniqueAddress\022\017\n\007version\030" +
-      "\002 \002(\003\"V\n\014OtherMessage\022\027\n\017enclosedMessage" +
-      "\030\001 \002(\014\022\024\n\014serializerId\030\002 \002(\005\022\027\n\017messageM" +
-      "anifest\030\004 \001(\014\"\036\n\nStringGSet\022\020\n\010elements\030" +
-      "\001 \003(\t\"\205\001\n\023DurableDataEnvelope\022.\n\004data\030\001 " +
-      "\002(\0132 .akka.cluster.ddata.OtherMessage\022>\n" +
-      "\007pruning\030\002 \003(\0132-.akka.cluster.ddata.Data" +
-      "Envelope.PruningEntryB#\n\037akka.cluster.dd" +
-      "ata.protobuf.msgH\001"
+      "er.ddata.DataEnvelope\"n\n\014DeltaMissing\022\013\n" +
+      "\003key\030\001 \002(\t\0223\n\010fromNode\030\002 \002(\0132!.akka.clus" +
+      "ter.ddata.UniqueAddress\022\034\n\024nodeLastDelta" +
+      "Version\030\003 \002(\003\"\201\002\n\020DeltaPropagation\0223\n\010fr" +
+      "omNode\030\001 \002(\0132!.akka.cluster.ddata.Unique" +
+      "Address\022;\n\007entries\030\002 \003(\0132*.akka.cluster." +
+      "ddata.DeltaPropagation.Entry\022\r\n\005reply\030\003 " +
+      "\001(\010\032l\n\005Entry\022\013\n\003key\030\001 \002(\t\0222\n\010envelope\030\002 " +
+      "\002(\0132 .akka.cluster.ddata.DataEnvelope\022\021\n" +
+      "\tfromSeqNr\030\003 \002(\003\022\017\n\007toSeqNr\030\004 \001(\003\"X\n\rUni" +
+      "queAddress\022,\n\007address\030\001 \002(\0132\033.akka.clust" +
+      "er.ddata.Address\022\013\n\003uid\030\002 \002(\017\022\014\n\004uid2\030\003 " +
+      "\001(\017\")\n\007Address\022\020\n\010hostname\030\001 \002(\t\022\014\n\004port" +
+      "\030\002 \002(\r\"\224\001\n\rVersionVector\0228\n\007entries\030\001 \003(" +
+      "\0132\'.akka.cluster.ddata.VersionVector.Ent" +
+      "ry\032I\n\005Entry\022/\n\004node\030\001 \002(\0132!.akka.cluster" +
+      ".ddata.UniqueAddress\022\017\n\007version\030\002 \002(\003\"V\n" +
+      "\014OtherMessage\022\027\n\017enclosedMessage\030\001 \002(\014\022\024" +
+      "\n\014serializerId\030\002 \002(\005\022\027\n\017messageManifest\030" +
+      "\004 \001(\014\"\036\n\nStringGSet\022\020\n\010elements\030\001 \003(\t\"\205\001" +
+      "\n\023DurableDataEnvelope\022.\n\004data\030\001 \002(\0132 .ak" +
+      "ka.cluster.ddata.OtherMessage\022>\n\007pruning" +
+      "\030\002 \003(\0132-.akka.cluster.ddata.DataEnvelope" +
+      ".PruningEntryB#\n\037akka.cluster.ddata.prot" +
+      "obuf.msgH\001"
     };
     descriptor = akka.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -24075,8 +25015,14 @@ public final class ReplicatorMessages {
       akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_akka_cluster_ddata_Gossip_Entry_descriptor,
         new java.lang.String[] { "Key", "Envelope", });
-    internal_static_akka_cluster_ddata_DeltaPropagation_descriptor =
+    internal_static_akka_cluster_ddata_DeltaMissing_descriptor =
       getDescriptor().getMessageTypes().get(14);
+    internal_static_akka_cluster_ddata_DeltaMissing_fieldAccessorTable = new
+      akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_akka_cluster_ddata_DeltaMissing_descriptor,
+        new java.lang.String[] { "Key", "FromNode", "NodeLastDeltaVersion", });
+    internal_static_akka_cluster_ddata_DeltaPropagation_descriptor =
+      getDescriptor().getMessageTypes().get(15);
     internal_static_akka_cluster_ddata_DeltaPropagation_fieldAccessorTable = new
       akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_akka_cluster_ddata_DeltaPropagation_descriptor,
@@ -24088,19 +25034,19 @@ public final class ReplicatorMessages {
         internal_static_akka_cluster_ddata_DeltaPropagation_Entry_descriptor,
         new java.lang.String[] { "Key", "Envelope", "FromSeqNr", "ToSeqNr", });
     internal_static_akka_cluster_ddata_UniqueAddress_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_akka_cluster_ddata_UniqueAddress_fieldAccessorTable = new
       akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_akka_cluster_ddata_UniqueAddress_descriptor,
         new java.lang.String[] { "Address", "Uid", "Uid2", });
     internal_static_akka_cluster_ddata_Address_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_akka_cluster_ddata_Address_fieldAccessorTable = new
       akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_akka_cluster_ddata_Address_descriptor,
         new java.lang.String[] { "Hostname", "Port", });
     internal_static_akka_cluster_ddata_VersionVector_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_akka_cluster_ddata_VersionVector_fieldAccessorTable = new
       akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_akka_cluster_ddata_VersionVector_descriptor,
@@ -24112,19 +25058,19 @@ public final class ReplicatorMessages {
         internal_static_akka_cluster_ddata_VersionVector_Entry_descriptor,
         new java.lang.String[] { "Node", "Version", });
     internal_static_akka_cluster_ddata_OtherMessage_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_akka_cluster_ddata_OtherMessage_fieldAccessorTable = new
       akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_akka_cluster_ddata_OtherMessage_descriptor,
         new java.lang.String[] { "EnclosedMessage", "SerializerId", "MessageManifest", });
     internal_static_akka_cluster_ddata_StringGSet_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_akka_cluster_ddata_StringGSet_fieldAccessorTable = new
       akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_akka_cluster_ddata_StringGSet_descriptor,
         new java.lang.String[] { "Elements", });
     internal_static_akka_cluster_ddata_DurableDataEnvelope_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_akka_cluster_ddata_DurableDataEnvelope_fieldAccessorTable = new
       akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_akka_cluster_ddata_DurableDataEnvelope_descriptor,
