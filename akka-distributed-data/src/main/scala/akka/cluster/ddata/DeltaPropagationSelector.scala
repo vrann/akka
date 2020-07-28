@@ -36,6 +36,13 @@ private[akka] trait DeltaPropagationSelector {
 
   def maxDeltaSize: Int
 
+  def currentVersions(): Map[KeyId, Long] = {
+    deltaEntries.map {
+      case (key, entries) =>
+        key -> entries.lastKey
+    }
+  }
+
   def currentVersion(key: KeyId): Long = deltaCounter.get(key) match {
     case Some(v) => v
     case None    => 0L
@@ -66,6 +73,12 @@ private[akka] trait DeltaPropagationSelector {
   def nodesSliceSize(allNodesSize: Int): Int = {
     // 2 - 10 nodes
     math.min(math.max((allNodesSize / gossipIntervalDivisor) + 1, 2), math.min(allNodesSize, 10))
+  }
+
+  def resetForNode(key: KeyId, node: UniqueAddress, nodeLastDeltaVersion: Long)= {
+    val deltaSentToNodeForKey = deltaSentToNode.getOrElse(key, TreeMap.empty[UniqueAddress, Long])
+    deltaSentToNode =
+      deltaSentToNode.updated(key, deltaSentToNodeForKey.updated(node, nodeLastDeltaVersion))
   }
 
   def collectPropagations(): Map[UniqueAddress, DeltaPropagation] = {

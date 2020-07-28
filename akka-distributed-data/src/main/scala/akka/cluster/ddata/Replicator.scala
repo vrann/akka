@@ -8,11 +8,11 @@ import java.security.MessageDigest
 import java.util.Optional
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
-import java.util.function.{ Function => JFunction }
+import java.util.function.{Function => JFunction}
 
 import scala.annotation.varargs
 import scala.collection.immutable
-import scala.collection.immutable.TreeSet
+import scala.collection.immutable.{TreeMap, TreeSet}
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
@@ -858,6 +858,13 @@ object Replicator {
   case object FlushChanges
 
   /**
+  * Log current version of the distributed data keys
+  */
+  case object ReportVersion
+
+  def reportVersion = ReportVersion
+
+  /**
    * Java API: The `FlushChanges` instance
    */
   def flushChanges = FlushChanges
@@ -1099,6 +1106,8 @@ object Replicator {
           override def toString: String = "NoDeltaPlaceholder"
         }
     }
+    case class DeltaMissing(key: KeyId, fromNode: UniqueAddress, nodeLastDeltaVersion: Long)
+      extends ReplicatorMessage
     case object DeltaNack extends ReplicatorMessage with DeadLetterSuppression
 
   }
@@ -1320,6 +1329,11 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       notifySubscribersInterval,
       self,
       FlushChanges)
+  val reportVersionTask = context.system.scheduler.scheduleWithFixedDelay(
+    5.milliseconds,
+    5.milliseconds,
+    self,
+    ReportVersion)
   val pruningTask =
     if (pruningInterval >= Duration.Zero)
       Some(
@@ -1359,7 +1373,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       // on an entry that has been pruned but that has not yet been performed on the target node.
       DeltaPropagation(
         selfUniqueAddress,
-        reply = false,
+        reply = true,
         deltas.iterator.collect {
           case (key, (d, fromSeqNr, toSeqNr)) if d != NoDeltaPlaceholder =>
             getData(key) match {
@@ -1374,7 +1388,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       // Derive the deltaPropagationInterval from the gossipInterval.
       // Normally the delta is propagated to all nodes within the gossip tick, so that
       // full state gossip is not needed.
-      val deltaPropagationInterval = (gossipInterval / deltaPropagationSelector.gossipIntervalDivisor).max(200.millis)
+      val deltaPropagationInterval = (gossipInterval / deltaPropagationSelector.gossipIntervalDivisor).min(5.millis)
       Some(
         context.system.scheduler
           .scheduleWithFixedDelay(deltaPropagationInterval, deltaPropagationInterval, self, DeltaPropagationTick))
@@ -1585,6 +1599,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     case u @ Update(key, writeC, req)  => receiveUpdate(key, u.modify, writeC, req)
     case ReadRepair(key, envelope)     => receiveReadRepair(key, envelope)
     case FlushChanges                  => receiveFlushChanges()
+    case ReportVersion                 => receiveReportVersion()
     case DeltaPropagationTick          => receiveDeltaPropagationTick()
     case GossipTick                    => receiveGossipTick()
     case ClockTick                     => receiveClockTick()
@@ -1602,7 +1617,48 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     case Delete(key, consistency, req) => receiveDelete(key, consistency, req)
     case RemovedNodePruningTick        => receiveRemovedNodePruningTick()
     case GetReplicaCount               => receiveGetReplicaCount()
+    case msg: DeltaMissing             => receiveDeltaMissing(msg)
     case TestFullStateGossip(enabled)  => fullStateGossipEnabled = enabled
+  }
+
+  private var gossipVersionSentToNode = Map.empty[KeyId, Map[UniqueAddress, Long]]
+
+  def receiveReportVersion(): Unit = {
+    dataEntries.foreach {
+      case (key, dataEnvelope) => {
+        dataEnvelope match {
+          case (DataEnvelope(_, _, deltaVersions), _) => { deltaVersions.versionsIterator.foreach {
+              case (address, version) => log.debug ("Key [{}] current version is [{}] at {}", key, version, address)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  def receiveDeltaMissing(deltaMissing: DeltaMissing): Unit = {
+    val writeMsg = Write(deltaMissing.key, envelope, Some(selfUniqueAddress))
+    if (deltaPropagationSelector.currentVersion(deltaMissing.key) - deltaMissing.nodeLastDeltaVersion > 200) {
+      val deltaSentToNodeForKey = gossipVersionSentToNode.getOrElse(deltaMissing.key, TreeMap.empty[UniqueAddress, Long])
+      val j = deltaSentToNodeForKey.getOrElse(deltaMissing.fromNode, 0L)
+      if (j <= deltaMissing.nodeLastDeltaVersion) {
+        gossipVersionSentToNode = gossipVersionSentToNode.updated(deltaMissing.key, deltaSentToNodeForKey.updated(deltaMissing.fromNode, deltaPropagationSelector.currentVersion(deltaMissing.key)))
+        log.debug("DeltaMissing Sending full gossip {}-{}", deltaMissing.nodeLastDeltaVersion, deltaPropagationSelector.currentVersion(deltaMissing.key))
+        var replyData = Map.empty[KeyId, DataEnvelope]
+        replyData = replyData.updated(deltaMissing.key, getData(deltaMissing.key).get)
+        val g = Gossip(
+          replyData,
+          sendBack = false,
+          Option(deltaMissing.fromNode.longUid),
+          Option(selfFromSystemUid.get))
+        replyTo ! g
+      } else {
+        log.debug("Skipping Gossip request because it was processed earlier")
+      }
+    } else {
+      log.debug("DeltaMissing resetting Delta Propagation {}-{}", deltaMissing.nodeLastDeltaVersion, deltaPropagationSelector.currentVersion(deltaMissing.key))
+      deltaPropagationSelector.resetForNode(deltaMissing.key, deltaMissing.fromNode, deltaMissing.nodeLastDeltaVersion)
+    }
   }
 
   def receiveGet(key: KeyR, consistency: ReadConsistency, req: Option[Any]): Unit = {
@@ -1953,13 +2009,22 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   def receiveDeltaPropagationTick(): Unit = {
     deltaPropagationSelector.collectPropagations().foreach {
       case (node, deltaPropagation) =>
-        // TODO split it to several DeltaPropagation if too many entries
-        if (deltaPropagation.deltas.nonEmpty)
+        if (deltaPropagation.deltas.nonEmpty) {
+          deltaPropagation.deltas.foreach {
+            case (key, entries) => log.debug(
+              "Sending DeltaPropagation from [{}] for [{}] with sequence numbers [{}], current version is [{}]",
+              deltaPropagation.fromNode,
+              key,
+              entries.fromSeqNr + "-" + entries.toSeqNr,
+              deltaPropagationSelector.currentVersion(key)
+            )
+          }
           replica(node) ! deltaPropagation
+        }
     }
 
-    if (deltaPropagationSelector.propagationCount % deltaPropagationSelector.gossipIntervalDivisor == 0)
-      deltaPropagationSelector.cleanupDeltaEntries()
+    //    if (deltaPropagationSelector.propagationCount % deltaPropagationSelector.gossipIntervalDivisor == 0)
+    //      deltaPropagationSelector.cleanupDeltaEntries()
   }
 
   def receiveDeltaPropagation(fromNode: UniqueAddress, reply: Boolean, deltas: Map[KeyId, Delta]): Unit =
@@ -1991,14 +2056,20 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
                     currentSeqNr)
                 if (reply) replyTo ! WriteAck
               } else if (fromSeqNr > (currentSeqNr + 1)) {
-                if (isDebugEnabled)
+                if (isDebugEnabled) {
                   log.debug(
                     "Skipping DeltaPropagation from [{}] for [{}] because missing deltas between [{}-{}]",
                     fromNode.address,
                     key,
                     currentSeqNr + 1,
                     fromSeqNr - 1)
-                if (reply) replyTo ! DeltaNack
+                }
+                if (reply) {
+                  if (isDebugEnabled) {
+                    log.debug("Sending DeltaMissing Missing Delta for DeltaPropagation {}", currentSeqNr)
+                  }
+                  replyTo ! DeltaMissing(key, selfUniqueAddress, currentSeqNr)
+                }
               } else {
                 if (isDebugEnabled)
                   log.debug(

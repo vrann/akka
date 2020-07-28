@@ -187,6 +187,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   val DurableDataEnvelopeManifest = "P"
   val DeltaPropagationManifest = "Q"
   val DeltaNackManifest = "R"
+  val DeltaMissingManifest = "S"
 
   private val fromBinaryMap = collection.immutable.HashMap[String, Array[Byte] => AnyRef](
     GetManifest -> getFromBinary,
@@ -206,6 +207,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     DeltaPropagationManifest -> deltaPropagationFromBinary,
     WriteNackManifest -> (_ => WriteNack),
     DeltaNackManifest -> (_ => DeltaNack),
+    DeltaMissingManifest -> deltaMissingFromBinary,
     DurableDataEnvelopeManifest -> durableDataEnvelopeFromBinary)
 
   override def manifest(obj: AnyRef): String = obj match {
@@ -227,6 +229,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     case _: Gossip              => GossipManifest
     case WriteNack              => WriteNackManifest
     case DeltaNack              => DeltaNackManifest
+    case _: DeltaMissing        => DeltaMissingManifest
     case _ =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
@@ -248,6 +251,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     case m: Subscribe[_]        => subscribeToProto(m).toByteArray
     case m: Unsubscribe[_]      => unsubscribeToProto(m).toByteArray
     case m: Gossip              => compress(gossipToProto(m))
+    case m: DeltaMissing        => deltaMissingToProto(m).toByteArray
     case WriteNack              => dm.Empty.getDefaultInstance.toByteArray
     case DeltaNack              => dm.Empty.getDefaultInstance.toByteArray
     case _ =>
@@ -405,6 +409,23 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val request = if (getSuccess.hasRequest()) Some(otherMessageFromProto(getSuccess.getRequest)) else None
     val data = otherMessageFromProto(getSuccess.getData).asInstanceOf[ReplicatedData]
     GetSuccess(key, request)(data)
+  }
+
+  private def deltaMissingFromBinary(bytes: Array[Byte]): DeltaMissing = {
+    val deltaMissing = dm.DeltaMissing.parseFrom(bytes)
+    DeltaMissing(
+      deltaMissing.getKey(),
+      uniqueAddressFromProto(deltaMissing.getFromNode()),
+      deltaMissing.getNodeLastDeltaVersion()
+    )
+  }
+
+  private def deltaMissingToProto(deltaMissing: DeltaMissing): dm.DeltaMissing = {
+    val b = dm.DeltaMissing.newBuilder()
+      .setKey(deltaMissing.key)
+      .setFromNode(uniqueAddressToProto(deltaMissing.fromNode))
+      .setNodeLastDeltaVersion(deltaMissing.nodeLastDeltaVersion)
+    b.build()
   }
 
   private def notFoundToProto(notFound: NotFound[_]): dm.NotFound = {

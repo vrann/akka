@@ -108,6 +108,12 @@ message Gossip {
   optional sfixed64 fromSystemUid = 4;
 }
 
+message DeltaMissing {
+  required string key = 1;
+  required UniqueAddress fromNode = 2;
+  required int64 nodeLastDeltaVersion = 3;
+}
+
 message DeltaPropagation {
   message Entry {
     required string key = 1;
